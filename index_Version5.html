@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estimateur de Projet - Mocha 💰</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #bfa18f 0%, #ede0d4 100%);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(109,76,65,0.1);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(45deg, #a97c50, #6d4c41);
+      color: #fff;
+      padding: 30px;
+      text-align: center;
+    }
+    .lead-form {
+      padding: 30px 24px;
+      background: #ede0d4;
+      border-radius: 0 0 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .lead-form label {
+      font-weight: 600;
+      color: #6d4c41;
+      margin-bottom: 6px;
+    }
+    .lead-form input {
+      padding: 10px;
+      border: 2px solid #a97c50;
+      border-radius: 8px;
+      font-size: 16px;
+      background: #fff;
+    }
+    .lead-form button {
+      padding: 12px 24px;
+      background: #a97c50;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .success-message {
+      text-align: center;
+      color: #6d4c41;
+      font-size: 1.1em;
+      margin: 24px 0 10px 0;
+      display: none;
+    }
+    #simulator {
+      display: none;
+      padding: 24px;
+    }
+    .section {
+      background: #ede0d4;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 18px;
+      border-left: 5px solid #a97c50;
+    }
+    .input-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 12px;
+    }
+    .input-field {
+      display: flex;
+      flex-direction: column;
+    }
+    .input-field label {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #a97c50;
+    }
+    .input-field input, .input-field select {
+      padding: 10px;
+      border: 2px solid #a97c50;
+      border-radius: 8px;
+      font-size: 16px;
+      background: #fff;
+    }
+    .results {
+      background: linear-gradient(135deg, #a97c50 0%, #6d4c41 100%);
+      color: #fff;
+      border-radius: 10px;
+      padding: 18px;
+      margin-top: 22px;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .metric {
+      background: rgba(255,255,255,0.09);
+      padding: 11px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .metric-value {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+    .metric-label {
+      font-size: 0.95em;
+      opacity: 0.9;
+    }
+    .scenario-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .scenario-btn {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.98em;
+    }
+    .scenario-btn.optimiste {
+      background: #2ecc71;
+      color: #fff;
+    }
+    .scenario-btn.realiste {
+      background: #f39c12;
+      color: #fff;
+    }
+    .scenario-btn.pessimiste {
+      background: #e74c3c;
+      color: #fff;
+    }
+    @media (max-width: 600px) {
+      .input-group {
+        grid-template-columns: 1fr;
+      }
+      .header h1 {
+        font-size: 1.3em;
+      }
+      #simulator {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>💰 Estimateur CA Potentiel - Mocha 💰</h1>
+      <p>Accède au simulateur en entrant ton prénom et ton adresse email.</p>
+    </div>
+    <form class="lead-form" id="leadForm">
+      <div>
+        <label for="prenom">Prénom :</label>
+        <input type="text" name="prenom" id="prenom" required>
+      </div>
+      <div>
+        <label for="email">Adresse email :</label>
+        <input type="email" name="email" id="email" required>
+      </div>
+      <button type="submit">Valider & Accéder au Simulateur</button>
+    </form>
+    <div class="success-message" id="successMsg">
+      Merci ! Tu as maintenant accès au simulateur.
+    </div>
+    <div id="simulator">
+      <div class="section">
+        <h2>📊 Données de Base</h2>
+        <div class="input-group">
+          <div class="input-field">
+            <label for="audience">Ton Audience Totale 👥</label>
+            <input type="number" id="audience" value="1000" min="0">
+            <small>Instagram + Email + Autres réseaux</small>
+          </div>
+          <div class="input-field">
+            <label for="prix">Prix de ton Offre (€) 💎</label>
+            <input type="number" id="prix" value="147" min="0">
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-field">
+            <label for="conversion">Taux de Conversion (%)</label>
+            <input type="number" id="conversion" value="1" min="0" max="100" step="0.1">
+          </div>
+          <div class="input-field">
+            <label for="engagement">Niveau d'Engagement</label>
+            <select id="engagement">
+              <option value="0.5">Peu engagée (0.5%)</option>
+              <option value="1" selected>Moyennement engagée (1%)</option>
+              <option value="2">Bien engagée (2%)</option>
+              <option value="5">Très engagée (5%)</option>
+              <option value="10">Super engagée (10%)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <h2>🎯 Scénarios Rapides</h2>
+        <div class="scenario-buttons">
+          <button class="scenario-btn optimiste" type="button" onclick="setScenario('optimiste')">🚀 Optimiste</button>
+          <button class="scenario-btn realiste" type="button" onclick="setScenario('realiste')">📈 Réaliste</button>
+          <button class="scenario-btn pessimiste" type="button" onclick="setScenario('pessimiste')">⚠️ Prudent</button>
+        </div>
+      </div>
+      <div class="results" id="results">
+        <h2>🎯 Ton Potentiel de Revenus</h2>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-value" id="ventesEstimees">10</div>
+            <div class="metric-label">Ventes Estimées</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="caEstime">1 470 €</div>
+            <div class="metric-label">Chiffre d'Affaires Potentiel</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="caMensuel">245 €</div>
+            <div class="metric-label">CA Mensuel Récurrent</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="caAnnuel">17 640 €</div>
+            <div class="metric-label">CA Annuel Potentiel</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Affichage simulateur après validation du formulaire
+    document.getElementById('leadForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const prenom = document.getElementById('prenom').value.trim();
+      const email = document.getElementById('email').value.trim();
+      if (prenom !== '' && email !== '') {
+        document.getElementById('leadForm').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+        setTimeout(function() {
+          document.getElementById('successMsg').style.display = 'none';
+          document.getElementById('simulator').style.display = 'block';
+          calculateResults(); // Calcul initial
+        }, 1000);
+      }
+    });
+
+    // Calculs du simulateur
+    function calculateResults() {
+      const audience = parseInt(document.getElementById('audience').value) || 0;
+      const prix = parseFloat(document.getElementById('prix').value) || 0;
+      const conversion = parseFloat(document.getElementById('conversion').value) || 0;
+      const ventesEstimees = Math.round((audience * conversion) / 100);
+      const caEstime = ventesEstimees * prix;
+      const caMensuel = Math.round(caEstime / 6);
+      const caAnnuel = caEstime * 2;
+      document.getElementById('ventesEstimees').textContent = ventesEstimees;
+      document.getElementById('caEstime').textContent = caEstime.toLocaleString('fr-FR') + ' €';
+      document.getElementById('caMensuel').textContent = caMensuel.toLocaleString('fr-FR') + ' €';
+      document.getElementById('caAnnuel').textContent = caAnnuel.toLocaleString('fr-FR') + ' €';
+    }
+
+    function setScenario(type) {
+      switch(type) {
+        case 'optimiste':
+          document.getElementById('conversion').value = 5;
+          document.getElementById('engagement').value = 5;
+          break;
+        case 'realiste':
+          document.getElementById('conversion').value = 2;
+          document.getElementById('engagement').value = 2;
+          break;
+        case 'pessimiste':
+          document.getElementById('conversion').value = 0.5;
+          document.getElementById('engagement').value = 0.5;
+          break;
+      }
+      calculateResults();
+    }
+
+    // Ecouteurs sur les inputs
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('#simulator input, #simulator select').forEach(input => {
+        input.addEventListener('input', calculateResults);
+      });
+    });
+  </script>
+</body>
+</html>
